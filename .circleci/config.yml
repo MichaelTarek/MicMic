@@ -1,13 +1,498 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
-version: 2.1
-# Use a package of configuration called an orb.
-orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
-workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
-    jobs:
-      - welcome/run
+package carpooling_package;
+
+import java.util.Scanner;
+
+/**
+ *
+ * interface Review to make a passenger give his rate and complain to the trip
+ */
+interface Review {
+
+    /**
+     * Review Method to Let the passenger give his rate to the trip
+     */
+    void review(int rate);
+
+    /**
+     * Complaint Method to Let the passenger give his Complain to the trip
+     */
+    void compliant();
+}
+
+/**
+ * Car Class Contain Driver Code , Capacity , Start Position and end Position
+ */
+class Cars {
+
+    int capacity, no_trips, fullCapacity;
+    final int code;
+    float price;
+    static int count;
+    String CurrLocation, Destination, driverName;
+    Tickets t = new Tickets();
+
+    /**
+     * @param code constructor for a final data member unique code for each car
+     */
+    public Cars(int code) {
+        this.code = code;
+    }
+
+    /**
+     *
+     * @return Static method to get the number of cars
+     */
+    public static int getCount() {
+        return count;
+    }
+
+    /**
+     *
+     * @param count static method to set the number of cars
+     */
+    public static void setCount(int count) {
+        Cars.count = count;
+    }
+}
+
+/**
+ * Abstract class of passenger has two child Subscribers And Non Subscribers
+ * that implements the interface
+ */
+abstract class Passengers implements Review {
+
+    String start, end, Complian;
+    int age, noTrips, rate;
+    Tickets t = new Tickets();
+
+    /**
+     *
+     * @return Start Position of Passenger
+     */
+    public String getStart() {
+        return start;
+    }
+
+    /**
+     *
+     * @param start set the start position of the passenger
+     */
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    /**
+     *
+     * @return get the end position of the passenger
+     */
+    public String getEnd() {
+        return end;
+    }
+
+    /**
+     *
+     * @param end set the end position of the passenger
+     */
+    public void setEnd(String end) {
+        this.end = end;
+    }
+
+    /**
+     *
+     * @return get the compliant for the passenger trip (interface)
+     */
+    public String getComplian() {
+        return Complian;
+    }
+
+    /**
+     *
+     * @param Complian Set the compliant for the passenger trip interface
+     */
+    public void setComplian(String Complian) {
+        this.Complian = Complian;
+    }
+
+    /**
+     *
+     * @return get rate of the trip
+     */
+    public int getRate() {
+        return rate;
+    }
+
+    /**
+     *
+     * @param rate set the rate of the trip
+     */
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    /**
+     * Display the ticket info (Code , Price)
+     *
+     * @param name display the driver name for passenger
+     * @param price display the price for the passenger
+     * @param code display the code for the passenger
+     */
+    abstract void Reserve(float price, int code, String name);
+}
+
+/**
+ * class Subscribers that extend the passengers and implement the interface
+ */
+class Subscribers extends Passengers {
+
+    Scanner in = new Scanner(System.in);
+
+    /**
+     * Display the ticket info (Code , Price)
+     *
+     * @param name display the driver name for passenger
+     * @param price display the price of ticket
+     * @param code display the unique code of car
+     */
+    @Override
+    void Reserve(float price, int code, String name) {
+        System.out.println("---------------------------------------------:");
+        System.out.println("Your Ticket");
+        System.out.printf("Your Car Code: %d \n", code);
+        System.out.printf("Your Driver Name : %s \n", name);
+        System.out.printf("Your Ticket Price Before the Discount %.1f$ \n", price);
+        System.out.printf("Your Ticket Price after the Discount %.1f$ \n", price * 0.5);
+    }
+
+    /**
+     * review from subscribe passenger from 5 with a handle exception
+     */
+    @Override
+    public final void review(int rate) {
+        try {
+            if (rate > 5) {
+                throw new Excep("Sorry Maximum Rate 5 !!!!");
+            } else {
+                System.out.printf("Your Rate is %d stars \n", rate);
+            }
+        } catch (Excep ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    /**
+     * complain from subscribe passenger for the trip
+     */
+    @Override
+    public void compliant() {
+        System.out.println("---------------------------------------------:");
+        System.out.println("Enter Your Complian");
+    }
+}
+
+/**
+ *
+ * Non Subscribers Class that extends the Passengers Class
+ */
+class Non_Subscribers extends Passengers {
+
+    Scanner in = new Scanner(System.in);
+
+    /**
+     * Display the ticket info
+     *
+     * @param name display the driver name for passenger
+     * @param price display the price of ticket
+     * @param code display the unique code of car
+     */
+    @Override
+    void Reserve(float price, int code, String name) {
+        System.out.println("---------------------------------------------:");
+        System.out.println("Your Ticket");
+        System.out.printf("Your Driver Name : %s\n", name);
+        System.out.printf("Your Car Code:%d\n", code);
+        System.out.printf("Your Ticket Price : %.1f$ \n", price);
+    }
+
+    /**
+     * review from Non subscribe passenger from 5 with a handle exception
+     */
+    @Override
+    public final void review(int rate) {
+        try {
+            if (rate > 5) {
+                throw new Excep("Sorry Maximum Rate 5 !!!!");
+            } else {
+                System.out.printf("Your Rate is %d stars \n", rate);
+            }
+
+        } catch (Excep ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    /**
+     * complain from non subscribe passenger for the trip
+     *
+     */
+    @Override
+    public void compliant() {
+        System.out.println("---------------------------------------------:");
+        System.out.println("Enter Your Complian");
+    }
+}
+
+/**
+ *
+ * class tickets that contain price and the code
+ */
+class Tickets {
+
+    float Price;
+    int carcode;
+
+    /**
+     *
+     * @param Price set the ticket's price
+     */
+    public void setPrice(float Price) {
+        this.Price = Price;
+    }
+
+    /**
+     *
+     * @param carcode set the ticket's code
+     */
+    public void setCarcode(int carcode) {
+        this.carcode = carcode;
+    }
+
+    /**
+     *
+     * @return get the ticket's price
+     */
+    public float getPrice() {
+        return Price;
+    }
+
+    /**
+     *
+     * @return get the ticket's code
+     */
+    public int getCarcode() {
+        return carcode;
+    }
+
+}
+
+/**
+ *
+ * Exception class
+ */
+class Excep extends Exception {
+
+    public Excep(String Msg) {
+        super(Msg);
+    }
+}
+
+public class CarPooling {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        Cars car[] = new Cars[10];
+        String start, end;
+        for (int i = 0; i < 10; i++) {
+            car[i] = new Cars(i + 101);
+            car[i].t.setCarcode(i + 101);
+        }
+        //HardCode 
+        car[0].driverName = "Ahmed";
+        car[2].driverName = "Ali";
+        car[3].driverName = "Mohamed";
+        car[4].driverName = "Abdallah";
+        car[5].driverName = "Abdelrhman";
+        car[6].driverName = "Mostafa";
+        car[7].driverName = "Mahmoued";
+        car[8].driverName = "Ahmed";
+        car[9].driverName = "Ali";
+        car[1].driverName = "Noah";
+        car[0].capacity = 2;
+        car[1].capacity = 4;
+        car[2].capacity = 3;
+        car[3].capacity = 4;
+        car[4].capacity = 2;
+        car[5].capacity = 5;
+        car[6].capacity = 6;
+        car[7].capacity = 2;
+        car[8].capacity = 6;
+        car[9].capacity = 5;
+        car[0].fullCapacity = 4;
+        car[1].fullCapacity = 5;
+        car[2].fullCapacity = 4;
+        car[3].fullCapacity = 6;
+        car[4].fullCapacity = 4;
+        car[5].fullCapacity = 8;
+        car[6].fullCapacity = 10;
+        car[7].fullCapacity = 8;
+        car[8].fullCapacity = 6;
+        car[9].fullCapacity = 8;
+        car[0].CurrLocation = "Cairo";
+        car[1].CurrLocation = "Alex";
+        car[2].CurrLocation = "Giza";
+        car[3].CurrLocation = "Gouna";
+        car[4].CurrLocation = "SharmElShekh";
+        car[5].CurrLocation = "Matrouh";
+        car[6].CurrLocation = "Dahab";
+        car[7].CurrLocation = "Asyout";
+        car[8].CurrLocation = "Sohag";
+        car[9].CurrLocation = "Cairo";
+        car[0].Destination = "Alex";
+        car[1].Destination = "Cairo";
+        car[2].Destination = "Matrouh";
+        car[3].Destination = "Cairo";
+        car[4].Destination = "Alex";
+        car[5].Destination = "Giza";
+        car[6].Destination = "Cairo";
+        car[7].Destination = "Alex";
+        car[8].Destination = "Giza";
+        car[9].Destination = "Aswan";
+        car[0].no_trips = 2;
+        car[1].no_trips = 3;
+        car[7].no_trips = 2;
+        car[2].no_trips = 1;
+        car[3].no_trips = 4;
+        car[4].no_trips = 3;
+        car[5].no_trips = 2;
+        car[6].no_trips = 3;
+        car[8].no_trips = 4;
+        car[9].no_trips = 1;
+        car[0].t.setPrice(100);
+        car[1].t.setPrice(70);
+        car[2].t.setPrice(115);
+        car[3].t.setPrice(140);
+        car[4].t.setPrice(155);
+        car[5].t.setPrice(130);
+        car[6].t.setPrice(160);
+        car[7].t.setPrice(175);
+        car[8].t.setPrice(90);
+        car[9].t.setPrice(210);
+        System.out.println("Press 1 to Start Your Trip");
+        System.out.println("Press 2 to Display our Routes");
+        Passengers pass[] = new Passengers[2];
+        pass[0] = new Subscribers();
+        pass[1] = new Non_Subscribers();
+        Subscribers subs = new Subscribers();
+        Non_Subscribers Nonsubs = new Non_Subscribers();
+        for (int i = 0; i < 2; i++) {
+            if (pass[i] instanceof Subscribers) {
+                subs = (Subscribers) pass[i];
+            } else {
+                Nonsubs = (Non_Subscribers) pass[i];
+            }
+        }
+        int choice = in.nextInt();
+        if (choice == 2) {
+            for (int i = 0; i < 10; i++) {
+                System.out.printf("trip number %d From: %s to : %s\n", i + 1, car[i].CurrLocation, car[i].Destination);
+
+            }
+        } else if (choice == 1) {
+            //Searching for a car 
+            OUTER:
+
+            while (choice == 1) {
+                int index = 0;
+                System.out.println("---------------------------------------------:");
+                System.out.println("Please Enter Your Location :");
+                start = in.next();
+                System.out.println("Please Enter Your Destination :");
+                end = in.next();
+                for (int j = 0; j < 10; j++) {
+                    if (start.equals(car[j].CurrLocation) && end.equals(car[j].Destination) && car[j].capacity < car[j].fullCapacity) {
+                        System.out.println("---------------------------------------------:");
+                        System.out.printf("Car number %d is Available \n", j + 1);
+                        System.out.println("The Car Detials : \n");
+                        System.out.printf("The Driver Name : %s\n", car[j].driverName);
+                        System.out.printf("The Car Code : %s\n", car[j].code);
+                        System.out.printf("Car Capacity : %d\n", car[j].fullCapacity);
+                        System.out.printf("Available Seats : %d\n", car[j].fullCapacity - car[j].capacity);
+
+                        break;
+                    }
+                    index++;
+                }
+                if (index >= 10) {
+                    System.out.println("Sorry there is no available car");
+                } else {
+                    System.out.println("Do you want to reserve the ticket ? y/n");
+                    car[index].capacity++;
+                    char x = in.next().charAt(0);
+                    if (x == 'y') {
+                        System.out.println("Are You Subscriber ? y/n");
+                        char ch = in.next().charAt(0);
+                        if (ch == 'y') {
+                            subs.setStart(start);
+                            subs.setEnd(end);
+                            System.out.println("Enter Your Age");
+                            int age = in.nextInt();
+                            System.out.println("Enter Your Number of trips");
+                            int noTrips = in.nextInt();
+                            if (age >= 30 && noTrips >= 4) {
+                                subs.Reserve(car[index].t.getPrice(), car[index].t.getCarcode(), car[index].driverName);
+                            } else {
+                                System.out.println("Sorry you Are Not Complete the Requirment of Age and Number of Trips");
+                            }
+                            System.out.println("---------------------------------------------:");
+                            System.out.println("To Give A Review Press 1:");
+                            System.out.println("To Make A Compliant Press 2:");
+                            System.out.println("To Exit Press 3:");
+                            int num = in.nextInt();
+                            switch (num) {
+                                case 1:
+                                    System.out.println("How Many Stars should to be given for this trip ? Max 5 Stars");
+                                    int rate = in.nextInt();
+                                    subs.review(rate);
+                                    break;
+                                case 2:
+                                    subs.compliant();
+                                    String Comp = in.next();
+                                    subs.setComplian(Comp);
+                                    break;
+                                default:
+                                    break OUTER;
+                            }
+                        } else if (ch == 'n') {
+                            Nonsubs.setStart(start);
+                            Nonsubs.setEnd(end);
+                            Nonsubs.Reserve(car[index].t.getPrice(), car[index].t.getCarcode(), car[index].driverName);
+                            System.out.println("---------------------------------------------:");
+                            System.out.println("To Give A Review Press 1:");
+                            System.out.println("To Make A Compliant Press 2:");
+                            System.out.println("To Exit Press 3:");
+                            int num = in.nextInt();
+                            switch (num) {
+                                case 1:
+                                    System.out.println("How Many Stars should to be given for this trip ? Max 5 Stars");
+                                    int rate = in.nextInt();
+                                    Nonsubs.review(rate);
+
+                                    break;
+                                case 2:
+                                    Nonsubs.compliant();
+                                    String Comp = in.next();
+                                    Nonsubs.setComplian(Comp);
+                                    break;
+                                default:
+                                    break OUTER;
+                            }
+                        }
+                    }
+
+                }
+                System.out.println("To Search for an another route press 1");
+                System.out.println("To Exit Press 2");
+                choice = in.nextInt();
+            }
+        }
+    }
+}
